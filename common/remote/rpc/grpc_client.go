@@ -117,7 +117,13 @@ func (c *GrpcClient) connectToServer(serverInfo ServerInfo) (IConnection, error)
 	grpcConn := NewGrpcConnection(serverInfo, serverCheckResponse.ConnectionId, conn, client, biStreamRequestClient)
 
 	c.bindBiRequestStream(biStreamRequestClient, grpcConn)
+	logger.Info("Send ConnectionSetupRequest - 1")
 	err = c.sendConnectionSetupRequest(grpcConn)
+	go func(){
+		time.Sleep(7 * time.Second)
+		logger.Info("Send ConnectionSetupRequest - 2")
+		err = c.sendConnectionSetupRequest(grpcConn)
+	}()
 	return grpcConn, err
 }
 
